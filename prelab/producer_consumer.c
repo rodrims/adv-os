@@ -84,6 +84,10 @@ int main(int argc, char **argv) {
 	Bug #5: Thread return needs to be cast to long, not to long *.
   */
   printf("\nPrinted %lu characters.\n", (long) thread_return);
+  /*
+    Bug #4: Call to free(thread_return) when thread_return was not allocated
+	through malloc resulting in undefined behavour (segfault).
+  */
 
   pthread_mutex_destroy(&queue.lock);
   pthread_mutex_destroy(&g_num_prod_lock);
