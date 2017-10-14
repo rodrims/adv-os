@@ -74,16 +74,12 @@ void mcs_tree_barrier()
         }
     }
 
-    printf("Arrival success for P%d\n", my_id);
-
     // if not root of tree, signal parent
     if (my_id != 0)
     {
         my_dst = my_id % 4 == 0 ? (my_id - 1 ) / 4 : my_id / 4; // integer (floor) division
         MPI_Send(&my_msg, 1, MPI_INT, my_dst, tag, MPI_COMM_WORLD);
     }
-
-    printf("Signal parent for arrival success for P%d\n", my_id);
 
     // initialize wakeup tree
     for (int i = 0; i < 2; i++)
@@ -105,8 +101,6 @@ void mcs_tree_barrier()
         MPI_Recv(&my_msg, 1, MPI_INT, my_src, tag, MPI_COMM_WORLD, &mpi_result);
     }
 
-    printf("Wakeup success for P%d\n", my_id);
-
     for (int i = 0; i < 2; i++)
     {
         if (has_wakeup_child[i])
@@ -115,6 +109,4 @@ void mcs_tree_barrier()
             MPI_Send(&my_msg, 1, MPI_INT, my_dst, tag, MPI_COMM_WORLD);
         }
     }
-
-    printf("Process %d finished.\n", my_id);
 }
