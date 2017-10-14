@@ -10,6 +10,8 @@ int main(int argc, char **argv)
 {
     MPI_Init(&argc, &argv);
 
+    MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
+
     // do work
     dissemination_barrier();
 
@@ -23,7 +25,7 @@ void dissemination_barrier()
     int num_rounds = ceil_log_2(num_processes);
     int tag = 1;
     int my_msg = 1; // true
-	MPI_Status mpi_result;
+    MPI_Status mpi_result;
 
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
@@ -32,13 +34,11 @@ void dissemination_barrier()
         int tmp_src;
 
         my_dst = (my_id + (1 << curr_round)) % num_processes;
-        tmp_src = (my_id - (1 << curr_round));
-        my_src = tmp_src < 0 ? num_processes - tmp_src : tmp_src;
+        tmp_src = (my_id - (1 << curr_round)) % num_processes;
+        my_src = tmp_src < 0 ? num_processes + tmp_src : tmp_src;
 
         MPI_Send(&my_msg, 1, MPI_INT, my_dst, tag, MPI_COMM_WORLD);
         MPI_Recv(&my_msg, 1, MPI_INT, my_src, tag, MPI_COMM_WORLD, &mpi_result);
-
-        printf("Round %d, proc %d: received message from proc %d", curr_round, my_id, my_msg);
     }
 }
 
