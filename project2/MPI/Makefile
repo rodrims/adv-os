@@ -27,8 +27,13 @@ CFLAGS = -I$(MPICH)/include
 #clean:
 #	rm -f *.o hello_world communicate_world openmp_mpi
 
+all: dissemination_barrier mcs_tree_barrier
+
 dissemination_barrier: dissemination_barrier.c
 	mpicc -o $@ -g -Wall $^ -lgomp
 
+mcs_tree_barrier: mcs_tree_barrier.c
+	mpicc -o $@ -g -Wall $^ -lgomp
+
 clean:
-	rm -f *.o dissemination_barrier
+	rm -f *.o dissemination_barrier mcs_tree_barrier
